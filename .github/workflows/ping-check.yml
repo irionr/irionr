@@ -9,13 +9,14 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-          - name: Verifica Raggiungibilità IP
+          - name: Verifica Dominio MyFRITZ
             run: |
-              # Tentativo di connessione HTTP con timeout di 10 secondi
-              # (Modifica in https://$TARGET_IP se il tuo servizio usa HTTPS)
-              if curl -m 10 -s -o /dev/null -w "%{http_code}" http://$TARGET_IP | grep -E "200|301|302|401|403"; then
-                echo "Servizio raggiungibile."
+              MY_DOMAIN="IL_TUO_DOMINIO.myfritz.net" # Sostituisci con il tuo indirizzo MyFRITZ
+              
+              # Interroga il dominio MyFRITZ (segue i redirect e accetta SSL)
+              if curl -m 10 -s -L -o /dev/null -w "%{http_code}" https://$MY_DOMAIN | grep -E "200|301|302|401|403"; then
+                echo "Fritz!Box raggiungibile."
               else
-                echo "ERRORE: Servizio non raggiungibile o offline!"
+                echo "ERRORE: Fritz!Box non raggiungibile!"
                 exit 1
               fi
