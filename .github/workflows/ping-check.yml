@@ -11,8 +11,6 @@ jobs:
     steps:
           - name: Verifica Raggiungibilità IP
             run: |
-              TARGET_IP="82.84.135.41"
-              
               # Tentativo di connessione HTTP con timeout di 10 secondi
               # (Modifica in https://$TARGET_IP se il tuo servizio usa HTTPS)
               if curl -m 10 -s -o /dev/null -w "%{http_code}" http://$TARGET_IP | grep -E "200|301|302|401|403"; then
