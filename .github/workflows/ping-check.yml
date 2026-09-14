@@ -9,14 +9,15 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Esegui Ping dell'IP
-        run: |
-          TARGET_IP="82.84.135.41"
-          
-          # Esegue il ping (3 pacchetti) o verifica una porta specifica se l'ICMP è bloccato
-          if ping -c 3 $TARGET_IP; then
-            echo "IP raggiungibile."
-          else
-            echo "ERRORE: IP non raggiungibile!"
-            exit 1 # Questo fa fallire il workflow e attiva la notifica email
-          fi
+          - name: Verifica Raggiungibilità IP
+            run: |
+              TARGET_IP="82.84.135.41"
+              
+              # Tentativo di connessione HTTP con timeout di 10 secondi
+              # (Modifica in https://$TARGET_IP se il tuo servizio usa HTTPS)
+              if curl -m 10 -s -o /dev/null -w "%{http_code}" http://$TARGET_IP | grep -E "200|301|302|401|403"; then
+                echo "Servizio raggiungibile."
+              else
+                echo "ERRORE: Servizio non raggiungibile o offline!"
+                exit 1
+              fi
